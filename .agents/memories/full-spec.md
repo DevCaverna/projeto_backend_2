@@ -8,7 +8,7 @@
 - **Validação:** Joi
 - **Upload:** Multer (5MB limit, imagens apenas)
 - **Testes:** Jest 29 + Supertest 7
-- **Docker:** postgres:16-alpine, node:22-alpine, nginx:stable-alpine
+- **Docker:** postgres:17-alpine, node:22-alpine, nginx:stable-alpine
 
 ## Banco de dados
 
