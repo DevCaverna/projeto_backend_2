@@ -53,23 +53,27 @@ O build será gerado em `dist/`.
 ## Funcionalidades
 
 ### Autenticação
+
 - Login com JWT
 - Rotas protegidas por perfil (admin, bibliotecário, leitor)
 - Recuperação de senha
 
 ### Livros
+
 - Lista com busca e filtros (título, autor, categoria, disponibilidade)
 - Cadastro/edição/exclusão
 - Upload de capa
 - Paginação
 
 ### Leitores
+
 - Lista com busca por nome
 - Cadastro/edição
 - Inativação
 - Histórico de empréstimos
 
 ### Empréstimos
+
 - Registro de empréstimo (seleciona leitor + livro)
 - Devolução
 - Filtro por status
@@ -77,16 +81,19 @@ O build será gerado em `dist/`.
 - Leitor vê apenas seus próprios empréstimos
 
 ### Dashboard
+
 - Cards com totais (livros, leitores, empréstimos, atrasados)
 - Gráfico de empréstimos por mês
 - Gráfico de livros por categoria
 - Livros mais emprestados
 
 ### Notificações
+
 - Sino no header com badge de não lidas
 - Dropdown com notificações em tempo real
 - Tipos: empréstimo, devolução, atraso
 
 ### Administração
+
 - Gerenciamento de usuários do sistema (admin)
 - Edição de permissões e status
