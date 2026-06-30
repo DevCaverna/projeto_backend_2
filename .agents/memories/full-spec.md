@@ -2,7 +2,7 @@
 
 ## Stack verificada
 
-- **Backend:** Node 22, Express 4, Sequelize 6, PostgreSQL 16
+- **Backend:** Node 22, Express 4, Sequelize 6, PostgreSQL 17
 - **Frontend:** React 19, Vite 8, React Router DOM, Axios, Recharts, React Hot Toast, React Icons
 - **Auth:** bcryptjs + jsonwebtoken
 - **Validação:** Joi

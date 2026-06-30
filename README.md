@@ -47,7 +47,7 @@ Aplicação web completa para gerenciamento de biblioteca, com API REST em Node.
 
 - Node.js 20+
 - Docker + Docker Compose (opcional)
-- PostgreSQL 16
+- PostgreSQL 17
 
 ## Como Rodar
 
