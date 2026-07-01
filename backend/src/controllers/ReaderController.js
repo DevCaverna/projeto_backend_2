@@ -57,6 +57,22 @@ class ReaderController {
 			next(err);
 		}
 	}
+
+	async destroy(req, res, next) {
+		try {
+			const reader = await readerService.inactivate(req.params.id);
+			res.json({
+				message: 'Leitor inativado com sucesso',
+				reader,
+			});
+		} catch (err) {
+			if (err.message === 'Leitor não encontrado')
+				return res.status(404).json({ error: err.message });
+			if (err.message === 'Leitor possui empréstimos ativos')
+				return res.status(400).json({ error: err.message });
+			next(err);
+		}
+	}
 }
 
 module.exports = new ReaderController();

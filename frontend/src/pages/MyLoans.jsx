@@ -19,7 +19,9 @@ const MyLoans = () => {
 	const fetchLoans = useCallback(async () => {
 		setLoading(true);
 		try {
-			const res = await api.get('/loans/my', { params: { page, limit } });
+			const res = await api.get('/loans/my-loans', {
+				params: { page, limit },
+			});
 			setLoans(res.data.loans);
 			setTotal(res.data.total);
 		} catch {

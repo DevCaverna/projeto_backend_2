@@ -28,6 +28,14 @@ class AuthController {
 		}
 	}
 
+	async me(req, res, next) {
+		try {
+			res.json(req.user);
+		} catch (err) {
+			next(err);
+		}
+	}
+
 	async forgotPassword(req, res, next) {
 		try {
 			const result = await authService.forgotPassword(req.body.email);

@@ -65,7 +65,12 @@ const BookDetail = () => {
 						(l) =>
 							l.status === 'open' &&
 							(l.book_id === Number(id) ||
-								l.book?.id === Number(id)),
+								l.book?.id === Number(id) ||
+								l.items?.some(
+									(item) =>
+										item.book_id === Number(id) ||
+										item.book?.id === Number(id),
+								)),
 					);
 					setHasActiveLoan(active);
 				}
@@ -152,16 +157,18 @@ const BookDetail = () => {
 							Ver empréstimo
 						</Button>
 					)}
-					{isReader && !hasActiveLoan && book.status === 'available' && (
-						<Button
-							type="primary"
-							icon={<MdLibraryBooks />}
-							loading={borrowing}
-							onClick={handleBorrow}
-						>
-							Pegar emprestado
-						</Button>
-					)}
+					{isReader &&
+						!hasActiveLoan &&
+						book.status === 'available' && (
+							<Button
+								type="primary"
+								icon={<MdLibraryBooks />}
+								loading={borrowing}
+								onClick={handleBorrow}
+							>
+								Pegar emprestado
+							</Button>
+						)}
 					{canEdit && (
 						<Button
 							icon={<MdEdit />}
@@ -233,7 +240,9 @@ const BookDetail = () => {
 					</Descriptions.Item>
 					<Descriptions.Item label="Status">
 						<Tag color={statusColor}>
-							{book.status === 'available' ? 'Disponível' : 'Indisponível'}
+							{book.status === 'available'
+								? 'Disponível'
+								: 'Indisponível'}
 						</Tag>
 					</Descriptions.Item>
 					<Descriptions.Item label="Criado em">

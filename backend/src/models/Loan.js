@@ -5,6 +5,16 @@ module.exports = (sequelize) => {
 		static associate(models) {
 			Loan.belongsTo(models.User, { foreignKey: 'user_id', as: 'user' });
 			Loan.belongsTo(models.Book, { foreignKey: 'book_id', as: 'book' });
+			Loan.hasMany(models.LoanBook, {
+				foreignKey: 'loan_id',
+				as: 'items',
+			});
+			Loan.belongsToMany(models.Book, {
+				through: models.LoanBook,
+				foreignKey: 'loan_id',
+				otherKey: 'book_id',
+				as: 'books',
+			});
 		}
 	}
 

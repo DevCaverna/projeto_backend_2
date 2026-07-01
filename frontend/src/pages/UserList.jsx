@@ -53,7 +53,7 @@ const UserList = () => {
 			setEditModalOpen(false);
 			fetchUsers();
 		} catch {
-			if (error.response) message.error('Erro ao atualizar usuário');
+			message.error('Erro ao atualizar usuário');
 		}
 	};
 

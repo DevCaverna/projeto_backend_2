@@ -2,7 +2,6 @@ import { Card, Form, Input, Select, Button, message } from 'antd';
 import { MdSave } from 'react-icons/md';
 import { useNavigate } from 'react-router-dom';
 import api from '../services/api';
-import { useAuth } from '../contexts/AuthContext';
 
 const UserForm = () => {
 	const navigate = useNavigate();
@@ -10,7 +9,7 @@ const UserForm = () => {
 
 	const handleSubmit = async (values) => {
 		try {
-			await api.post('/auth/register', values);
+			await api.post('/users', values);
 			message.success('Usuário criado com sucesso');
 			navigate('/users');
 		} catch {

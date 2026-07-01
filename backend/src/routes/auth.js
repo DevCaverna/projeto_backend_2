@@ -20,6 +20,7 @@ router.post(
 	controller.register,
 );
 router.post('/login', validate(loginSchema), controller.login);
+router.get('/me', auth, controller.me);
 router.post(
 	'/forgot-password',
 	validate(forgotPasswordSchema),

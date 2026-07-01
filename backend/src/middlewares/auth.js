@@ -14,7 +14,7 @@ module.exports = async (req, res, next) => {
 	try {
 		const decoded = jwt.verify(parts[1], process.env.JWT_SECRET);
 		const user = await User.findByPk(decoded.id, {
-			attributes: ['id', 'role', 'status'],
+			attributes: ['id', 'name', 'email', 'role', 'status'],
 		});
 		if (!user)
 			return res.status(401).json({ error: 'Usuário não encontrado' });

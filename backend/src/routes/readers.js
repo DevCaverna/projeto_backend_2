@@ -28,5 +28,6 @@ router.patch(
 	role('admin', 'librarian'),
 	controller.inactivate,
 );
+router.delete('/:id', auth, role('admin', 'librarian'), controller.destroy);
 
 module.exports = router;
