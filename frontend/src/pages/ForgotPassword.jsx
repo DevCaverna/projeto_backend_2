@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import {
 	Card,
 	Form,
@@ -17,9 +17,11 @@ import api from '../services/api';
 const { Title } = Typography;
 
 export default function ForgotPassword() {
-	const [step, setStep] = useState('email');
+	const [searchParams] = useSearchParams();
+	const initialToken = searchParams.get('token') || '';
+	const [step, setStep] = useState(initialToken ? 'token' : 'email');
 	const [loading, setLoading] = useState(false);
-	const [token, setToken] = useState('');
+	const [token, setToken] = useState(initialToken);
 
 	const [emailForm] = Form.useForm();
 	const [resetForm] = Form.useForm();
@@ -35,7 +37,7 @@ export default function ForgotPassword() {
 			setToken(data.token || '');
 			resetForm.setFieldsValue({ token: data.token || '' });
 			setStep('token');
-			message.success('Token gerado! Verifique o alerta abaixo.');
+			message.success(data.message);
 		} catch (err) {
 			message.error(
 				err.response?.data?.error || 'Erro ao solicitar recuperação',
@@ -142,16 +144,27 @@ export default function ForgotPassword() {
 
 				{step === 'token' && (
 					<>
-						<Alert
-							message="Token de recuperação"
-							description={token || 'Nenhum token recebido'}
-							type="warning"
-							showIcon
-							style={{ marginBottom: 16 }}
-						/>
+						{token ? (
+							<Alert
+								message="Token de recuperação"
+								description={token}
+								type="warning"
+								showIcon
+								style={{ marginBottom: 16 }}
+							/>
+						) : (
+							<Alert
+								message="Informe o token recebido"
+								description="Use o token enviado pelo canal de recuperação para definir uma nova senha."
+								type="info"
+								showIcon
+								style={{ marginBottom: 16 }}
+							/>
+						)}
 
 						<Form
 							form={resetForm}
+							initialValues={{ token: initialToken }}
 							layout="vertical"
 							onFinish={handleReset}
 							autoComplete="off"
