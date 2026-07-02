@@ -8,7 +8,9 @@ const router = Router();
 
 router.get('/', auth, role('admin', 'librarian'), controller.index);
 router.get('/overdue', auth, role('admin', 'librarian'), controller.overdue);
+router.get('/my-loans', auth, role('reader'), controller.myLoans);
 router.get('/my', auth, role('reader'), controller.myLoans);
+router.get('/:id', auth, role('admin', 'librarian'), controller.show);
 router.post(
 	'/',
 	auth,

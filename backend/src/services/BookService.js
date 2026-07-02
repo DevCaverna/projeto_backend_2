@@ -1,5 +1,5 @@
 const { Op } = require('sequelize');
-const { Book, Loan } = require('../models');
+const { Book, Loan, LoanBook } = require('../models');
 
 class BookService {
 	async findAll(query) {
@@ -88,7 +88,18 @@ class BookService {
 		const activeLoans = await Loan.count({
 			where: { book_id: id, status: 'open' },
 		});
-		if (activeLoans > 0) throw new Error('Livro possui empréstimos ativos');
+		const activeLoanItems = await LoanBook.count({
+			where: { book_id: id },
+			include: [
+				{
+					association: 'loan',
+					where: { status: 'open' },
+					attributes: [],
+				},
+			],
+		});
+		if (activeLoans > 0 || activeLoanItems > 0)
+			throw new Error('Livro possui empréstimos ativos');
 
 		await book.destroy();
 		return { message: 'Livro removido com sucesso' };

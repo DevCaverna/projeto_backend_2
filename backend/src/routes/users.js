@@ -2,6 +2,8 @@ const { Router } = require('express');
 const auth = require('../middlewares/auth');
 const role = require('../middlewares/role');
 const { User } = require('../models');
+const authService = require('../services/AuthService');
+const { validate, registerSchema } = require('../validators');
 
 const router = Router();
 
@@ -13,6 +15,23 @@ router.get('/', auth, role('admin'), async (req, res, next) => {
 		next(err);
 	}
 });
+
+router.post(
+	'/',
+	auth,
+	role('admin'),
+	validate(registerSchema),
+	async (req, res, next) => {
+		try {
+			const user = await authService.register(req.body);
+			res.status(201).json(user);
+		} catch (err) {
+			if (err.message === 'E-mail já cadastrado')
+				return res.status(400).json({ error: err.message });
+			next(err);
+		}
+	},
+);
 
 router.put('/:id', auth, role('admin'), async (req, res, next) => {
 	try {
@@ -49,6 +68,10 @@ router.delete('/:id', auth, role('admin'), async (req, res, next) => {
 			return res
 				.status(400)
 				.json({ error: 'Não pode excluir a si mesmo' });
+		if (user.role === 'admin')
+			return res
+				.status(400)
+				.json({ error: 'Não pode excluir outro administrador' });
 		await user.destroy();
 		res.json({ message: 'Usuário removido com sucesso' });
 	} catch (err) {

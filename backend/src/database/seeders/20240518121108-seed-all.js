@@ -11,7 +11,7 @@ module.exports = {
 				email: 'admin@biblioteca.com',
 				password: hash,
 				role: 'admin',
-				cpf: '00000000001',
+				cpf: '12345678901',
 				status: 'active',
 			},
 			{
@@ -19,7 +19,7 @@ module.exports = {
 				email: 'biblio@biblioteca.com',
 				password: hash,
 				role: 'librarian',
-				cpf: '00000000002',
+				cpf: '23456789012',
 				status: 'active',
 			},
 			{
@@ -27,7 +27,7 @@ module.exports = {
 				email: 'joao@email.com',
 				password: hash,
 				role: 'reader',
-				cpf: '00000000003',
+				cpf: '34567890123',
 				status: 'active',
 				phone: '41999990001',
 				address: 'Rua das Flores, 123',
@@ -37,7 +37,7 @@ module.exports = {
 				email: 'maria@email.com',
 				password: hash,
 				role: 'reader',
-				cpf: '00000000004',
+				cpf: '45678901234',
 				status: 'active',
 				phone: '41999990002',
 				address: 'Av. Principal, 456',
@@ -139,6 +139,23 @@ module.exports = {
 			},
 		]);
 
+		const seededLoans = await queryInterface.sequelize.query(
+			`SELECT id, user_id, book_id FROM loans WHERE user_id IN (:joaoId, :mariaId)`,
+			{
+				replacements: { joaoId, mariaId },
+				type: queryInterface.sequelize.QueryTypes.SELECT,
+			},
+		);
+
+		await queryInterface.bulkInsert(
+			'loan_books',
+			seededLoans.map((loan) => ({
+				loan_id: loan.id,
+				book_id: loan.book_id,
+				quantity: 1,
+			})),
+		);
+
 		const mariaLoan = await queryInterface.sequelize.query(
 			`SELECT id FROM loans WHERE user_id = :userId AND book_id = :bookId AND loan_date = '2024-11-01'`,
 			{
@@ -163,6 +180,7 @@ module.exports = {
 	down: async (queryInterface) => {
 		await queryInterface.bulkDelete('notifications', null, {});
 		await queryInterface.bulkDelete('password_resets', null, {});
+		await queryInterface.bulkDelete('loan_books', null, {});
 		await queryInterface.bulkDelete('loans', null, {});
 		await queryInterface.bulkDelete('books', null, {});
 		await queryInterface.bulkDelete('users', null, {});

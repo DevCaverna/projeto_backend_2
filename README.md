@@ -32,6 +32,7 @@ Aplicação web completa para gerenciamento de biblioteca, com API REST em Node.
 
 - **3 perfis de usuário:** Administrador, Bibliotecário, Leitor
 - **CRUD completo** de livros, leitores e empréstimos
+- **Empréstimos com um ou mais livros** via tabela intermediária `loan_books`
 - **Autenticação JWT** com proteção de rotas por perfil
 - **Busca e filtros** avançados
 - **Dashboard** com gráficos e estatísticas
@@ -42,6 +43,12 @@ Aplicação web completa para gerenciamento de biblioteca, com API REST em Node.
 - **Documentação Swagger** em `/api-docs`
 - **Testes automatizados** (Jest + Supertest)
 - **Docker** para ambiente completo
+
+## Observações Acadêmicas
+
+- Leitores são armazenados na tabela `users` com `role = reader`, mantendo os campos pedidos para leitor (`cpf`, `phone`, `address`, `status`).
+- A associação de empréstimos com livros é feita pela tabela `loan_books`, permitindo múltiplos livros por empréstimo. O campo legado `loans.book_id` permanece para compatibilidade com telas e listagens simples.
+- Os endpoints principais esperados pela orientação estão disponíveis, incluindo `/auth/me`, `/users`, `/loans/:id` e `/loans/my-loans`.
 
 ## Requisitos
 

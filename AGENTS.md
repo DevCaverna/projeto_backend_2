@@ -35,4 +35,9 @@ docker compose up -d           # Sobe PostgreSQL + serviços
 
 ## Tasks atuais
 
-Ver `PLANO.md` para o plano completo (16 fases). O todo list reflete o estado atual.
+Ver `PLANO.md` para o plano de acompanhamento. Estado atual:
+
+- Backend e frontend principais implementados.
+- Endpoints esperados revisados: `/auth/me`, `/users`, `/readers`, `/loans/:id`, `/loans/my-loans`.
+- Tabela intermediária `loan_books` adicionada para empréstimos com um ou mais livros.
+- Próximo foco: rodar migrations/seeders/testes em ambiente com dependências instaladas e banco disponível.
