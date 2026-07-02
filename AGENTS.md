@@ -40,4 +40,5 @@ Ver `PLANO.md` para o plano de acompanhamento. Estado atual:
 - Backend e frontend principais implementados.
 - Endpoints esperados revisados: `/auth/me`, `/users`, `/readers`, `/loans/:id`, `/loans/my-loans`.
 - Tabela intermediária `loan_books` adicionada para empréstimos com um ou mais livros.
+- Recuperação de senha implementada com token em `password_resets` e fluxo frontend em `/forgot-password`.
 - Próximo foco: rodar migrations/seeders/testes em ambiente com dependências instaladas e banco disponível.

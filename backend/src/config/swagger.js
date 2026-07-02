@@ -81,6 +81,64 @@ const options = {
 					},
 				},
 			},
+			'/auth/forgot-password': {
+				post: {
+					tags: ['Auth'],
+					summary: 'Solicita recuperação de senha',
+					requestBody: {
+						required: true,
+						content: {
+							'application/json': {
+								schema: {
+									type: 'object',
+									required: ['email'],
+									properties: {
+										email: {
+											type: 'string',
+											format: 'email',
+										},
+									},
+								},
+							},
+						},
+					},
+					responses: {
+						200: {
+							description:
+								'Solicitação registrada quando o e-mail existir',
+						},
+						400: { description: 'Dados inválidos' },
+					},
+				},
+			},
+			'/auth/reset-password': {
+				post: {
+					tags: ['Auth'],
+					summary: 'Redefine senha com token',
+					requestBody: {
+						required: true,
+						content: {
+							'application/json': {
+								schema: {
+									type: 'object',
+									required: ['token', 'password'],
+									properties: {
+										token: { type: 'string' },
+										password: {
+											type: 'string',
+											minLength: 6,
+										},
+									},
+								},
+							},
+						},
+					},
+					responses: {
+						200: { description: 'Senha redefinida' },
+						400: { description: 'Token inválido ou expirado' },
+					},
+				},
+			},
 			'/users': {
 				get: {
 					tags: ['Usuários'],
