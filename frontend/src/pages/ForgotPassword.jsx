@@ -36,8 +36,8 @@ export default function ForgotPassword() {
 			});
 			setToken(data.token || '');
 			resetForm.setFieldsValue({ token: data.token || '' });
-			setStep('token');
 			message.success(data.message);
+			if (data.token) setStep('token');
 		} catch (err) {
 			message.error(
 				err.response?.data?.error || 'Erro ao solicitar recuperação',

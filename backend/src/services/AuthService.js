@@ -6,6 +6,10 @@ const { User, PasswordReset } = require('../models');
 const RESET_PASSWORD_MESSAGE =
 	'Se o e-mail existir, enviaremos um link de recuperação';
 
+const canExposeResetToken = () =>
+	['development', 'test'].includes(process.env.NODE_ENV) &&
+	process.env.EXPOSE_PASSWORD_RESET_TOKEN === 'true';
+
 class AuthService {
 	async register(data) {
 		const exists = await User.findOne({ where: { email: data.email } });
@@ -70,7 +74,7 @@ class AuthService {
 		});
 
 		const result = { message: RESET_PASSWORD_MESSAGE };
-		if (process.env.NODE_ENV !== 'production') {
+		if (canExposeResetToken()) {
 			const frontendUrl =
 				process.env.FRONTEND_URL || 'http://localhost:5173';
 			result.token = token;

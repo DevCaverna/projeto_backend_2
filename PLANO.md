@@ -10,7 +10,7 @@
 - Tabela `loan_books` para associar um empréstimo a um ou mais livros.
 - Swagger configurado em `/api-docs` com os endpoints principais.
 - Seeds com administrador, bibliotecário, leitores, livros e empréstimos.
-- Recuperação de senha implementada com token salvo em `password_resets`; em desenvolvimento/teste a API retorna token e URL para facilitar validação.
+- Recuperação de senha implementada com token salvo em `password_resets`; a API só expõe token/URL com `EXPOSE_PASSWORD_RESET_TOKEN=true` em ambiente `development` ou `test`.
 
 ## Próximas Verificações
 
