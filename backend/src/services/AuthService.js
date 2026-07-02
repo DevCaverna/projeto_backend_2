@@ -3,6 +3,13 @@ const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 const { User, PasswordReset } = require('../models');
 
+const RESET_PASSWORD_MESSAGE =
+	'Se o e-mail existir, enviaremos um link de recuperação';
+
+const canExposeResetToken = () =>
+	['development', 'test'].includes(process.env.NODE_ENV) &&
+	process.env.EXPOSE_PASSWORD_RESET_TOKEN === 'true';
+
 class AuthService {
 	async register(data) {
 		const exists = await User.findOne({ where: { email: data.email } });
@@ -50,11 +57,7 @@ class AuthService {
 
 	async forgotPassword(email) {
 		const user = await User.findOne({ where: { email } });
-		if (!user)
-			return {
-				message:
-					'Se o e-mail existir, enviaremos um link de recuperação',
-			};
+		if (!user) return { message: RESET_PASSWORD_MESSAGE };
 
 		await PasswordReset.update(
 			{ used: true },
@@ -69,9 +72,17 @@ class AuthService {
 			token,
 			expires_at: expiresAt,
 		});
-		return {
-			message: 'Se o e-mail existir, enviaremos um link de recuperação',
-		};
+
+		const result = { message: RESET_PASSWORD_MESSAGE };
+		if (canExposeResetToken()) {
+			const frontendUrl =
+				process.env.FRONTEND_URL || 'http://localhost:5173';
+			result.token = token;
+			result.reset_url = `${frontendUrl}/forgot-password?token=${token}`;
+			result.expires_at = expiresAt;
+		}
+
+		return result;
 	}
 
 	async resetPassword(token, newPassword) {

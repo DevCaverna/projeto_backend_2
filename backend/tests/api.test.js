@@ -1,6 +1,6 @@
 const request = require('supertest');
 const app = require('../src/app');
-const { sequelize, User, Book } = require('../src/models');
+const { sequelize, User, Book, PasswordReset } = require('../src/models');
 const bcrypt = require('bcryptjs');
 
 let adminToken, librarianToken, readerToken;
@@ -115,6 +115,86 @@ describe('Auth', () => {
 				role: 'reader',
 			});
 		expect(res.status).toBe(403);
+	});
+
+	it('should request password reset without exposing unknown emails', async () => {
+		const known = await request(app)
+			.post('/auth/forgot-password')
+			.send({ email: 'joao@email.com' });
+		const unknown = await request(app)
+			.post('/auth/forgot-password')
+			.send({ email: 'nao-existe@email.com' });
+
+		expect(known.status).toBe(200);
+		expect(unknown.status).toBe(200);
+		expect(known.body.message).toBe(unknown.body.message);
+		expect(known.body).not.toHaveProperty('token');
+		expect(unknown.body).not.toHaveProperty('token');
+	});
+
+	it('should expose password reset token only when debug flag is enabled', async () => {
+		const previous = process.env.EXPOSE_PASSWORD_RESET_TOKEN;
+		process.env.EXPOSE_PASSWORD_RESET_TOKEN = 'true';
+		let res;
+
+		try {
+			res = await request(app)
+				.post('/auth/forgot-password')
+				.send({ email: 'joao@email.com' });
+		} finally {
+			if (previous === undefined) {
+				delete process.env.EXPOSE_PASSWORD_RESET_TOKEN;
+			} else {
+				process.env.EXPOSE_PASSWORD_RESET_TOKEN = previous;
+			}
+		}
+
+		expect(res.status).toBe(200);
+		expect(res.body).toHaveProperty('token');
+		expect(res.body).toHaveProperty('reset_url');
+	});
+
+	it('should reset password with a valid token', async () => {
+		await request(app)
+			.post('/auth/forgot-password')
+			.send({ email: 'joao@email.com' });
+		const user = await User.findOne({ where: { email: 'joao@email.com' } });
+		const token = await PasswordReset.findOne({
+			where: { user_id: user.id, used: false },
+		});
+
+		const reset = await request(app)
+			.post('/auth/reset-password')
+			.send({ token: token.token, password: 'nova123' });
+		expect(reset.status).toBe(200);
+		expect(reset.body.message).toBe('Senha redefinida com sucesso');
+
+		const oldLogin = await request(app)
+			.post('/auth/login')
+			.send({ email: 'joao@email.com', password: '123456' });
+		expect(oldLogin.status).toBe(401);
+
+		const newLogin = await request(app)
+			.post('/auth/login')
+			.send({ email: 'joao@email.com', password: 'nova123' });
+		expect(newLogin.status).toBe(200);
+		expect(newLogin.body).toHaveProperty('token');
+	});
+
+	it('should reject expired password reset tokens', async () => {
+		const user = await User.findOne({ where: { email: 'joao@email.com' } });
+		const reset = await PasswordReset.create({
+			user_id: user.id,
+			token: 'expired-token',
+			expires_at: new Date(Date.now() - 60000),
+		});
+
+		const res = await request(app)
+			.post('/auth/reset-password')
+			.send({ token: reset.token, password: 'nova123' });
+
+		expect(res.status).toBe(400);
+		expect(res.body.error).toBe('Token expirado');
 	});
 });
 
