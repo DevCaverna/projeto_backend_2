@@ -23,9 +23,7 @@ import {
 } from 'react-icons/md';
 import api from '../services/api';
 import { useAuth } from '../contexts/AuthContext';
-
-const COVER_URL =
-	'https://m.media-amazon.com/images/I/51NWH4A+7LL._SY445_SX342_ML2_.jpg';
+import { assetUrl } from '../config';
 
 const BookList = () => {
 	const { user } = useAuth();
@@ -95,12 +93,13 @@ const BookList = () => {
 			dataIndex: 'cover_image',
 			key: 'cover_image',
 			width: 80,
-			render: (cover) =>
-				cover ? (
+			render: (cover) => {
+				const coverSrc = assetUrl(cover);
+				return coverSrc ? (
 					<Image
 						width={50}
 						height={70}
-						src={COVER_URL}
+						src={coverSrc}
 						style={{ objectFit: 'cover', borderRadius: 4 }}
 					/>
 				) : (
@@ -110,7 +109,8 @@ const BookList = () => {
 					>
 						<MdBook size={24} color="#bfbfbf" />
 					</div>
-				),
+				);
+			},
 		},
 		{ title: 'Título', dataIndex: 'title', key: 'title', ellipsis: true },
 		{ title: 'Autor', dataIndex: 'author', key: 'author', ellipsis: true },

@@ -41,6 +41,11 @@ const BookForm = () => {
 		try {
 			if (id) {
 				await api.put(`/books/${id}`, values);
+				if (coverFile) {
+					const formData = new FormData();
+					formData.append('cover', coverFile);
+					await api.post(`/books/${id}/cover`, formData);
+				}
 				message.success('Livro atualizado');
 			} else {
 				const res = await api.post('/books', values);
@@ -140,15 +145,11 @@ const BookForm = () => {
 				>
 					<InputNumber style={{ width: '100%' }} min={0} />
 				</Form.Item>
-				{!id && (
-					<Form.Item label="Capa do Livro">
-						<Upload {...uploadProps}>
-							<Button icon={<MdCloudUpload />}>
-								Enviar Capa
-							</Button>
-						</Upload>
-					</Form.Item>
-				)}
+				<Form.Item label="Capa do Livro">
+					<Upload {...uploadProps}>
+						<Button icon={<MdCloudUpload />}>Enviar Capa</Button>
+					</Upload>
+				</Form.Item>
 				<Form.Item>
 					<Button
 						type="primary"

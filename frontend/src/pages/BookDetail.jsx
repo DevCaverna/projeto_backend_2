@@ -21,9 +21,7 @@ import {
 } from 'react-icons/md';
 import api from '../services/api';
 import { useAuth } from '../contexts/AuthContext';
-
-const COVER_URL =
-	'https://m.media-amazon.com/images/I/51NWH4A+7LL._SY445_SX342_ML2_.jpg';
+import { assetUrl } from '../config';
 
 const formatDate = (d) => {
 	if (!d) return '-';
@@ -134,6 +132,7 @@ const BookDetail = () => {
 	const statusColor = book.status === 'available' ? 'green' : 'red';
 	const canEdit = user?.role === 'admin' || user?.role === 'librarian';
 	const isReader = user?.role === 'reader';
+	const coverSrc = assetUrl(book.cover_image);
 
 	return (
 		<Card
@@ -191,10 +190,10 @@ const BookDetail = () => {
 			}
 		>
 			<Space align="start" size="large" wrap>
-				{book.cover_image ? (
+				{coverSrc ? (
 					<Image
 						width={180}
-						src={COVER_URL}
+						src={coverSrc}
 						style={{ objectFit: 'cover', borderRadius: 8 }}
 					/>
 				) : (
